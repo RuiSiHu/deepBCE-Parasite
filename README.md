@@ -52,5 +52,5 @@ Optional arguments:
 
 The -f parameter allows to select a specific feature type, while -c specifies the machine learning algorithm to be used.
 
-Due to GitHub's storage limitations, the machine learning models can be downloaded from https://huggingface.co/huruisi and placed in the Models directory.
+Due to GitHub's storage limitations, the machine learning models can be downloaded from [https://huggingface.co/huruisi](https://huggingface.co/huruisi/deepBCE-Parasite/tree/main) and placed in the Models directory.
 
