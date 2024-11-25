@@ -41,7 +41,7 @@ For further validation, traditional machine learning algorithms can be applied t
 
     python BCE-ML.py -h
 
-Sequence-Based Prediction of B-cell Epitopes in Parasites Using Feature Representation Learning
+Sequence-based prediction of B-cell epitopes in parasites using feature representation learning
 
 Optional arguments:
 
