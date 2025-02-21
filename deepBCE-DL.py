@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # _*_coding:utf-8_*_
-# @Author : Rui-Si Hu
+# @Author: Rui-Si Hu
+# Date: 2025.2.22
 
 import os
 import sys
@@ -11,14 +12,13 @@ import numpy as np
 import time
 
 from preprocess.data_process import load_data
-from DeepModels.deepBCP_model import EncoderDecoderModel, Config
+from DeepModels.deepBCE_model import EncoderDecoderModel, Config
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 result_folder = 'DeepResults'
 if not os.path.exists(result_folder):
     os.makedirs(result_folder)
-
 
 def set_seed(seed=42):
     np.random.seed(seed)
@@ -32,8 +32,7 @@ def get_attn_pad_mask(seq, pad_token=0):
     batch_size, seq_len = seq.size()
     return seq.eq(pad_token).unsqueeze(1).unsqueeze(2).expand(batch_size, 1, seq_len, seq_len)
 
-
-def model_eval(test_data, model):
+def model_eval(test_data, model, classification_threshold=0.6):
     label_pred = torch.empty([0], device=device)
     pred_prob = torch.empty([0], device=device)
     model.eval()
@@ -41,11 +40,9 @@ def model_eval(test_data, model):
     with torch.no_grad():
         for batch in test_data:
             inputs = batch.to(device)
-
             src_mask = get_attn_pad_mask(inputs)
 
             enc_output, _ = model.encoder(inputs, src_mask)
-
             pooled_output = model.pool(enc_output.transpose(1, 2)).squeeze(-1)
             x = model.fc1(pooled_output)
             x = model.relu(x)
@@ -54,12 +51,12 @@ def model_eval(test_data, model):
 
             pred_prob_all = torch.softmax(outputs, dim=1)
             pred_prob_positive = pred_prob_all[:, 1]
-            pred_class = torch.argmax(outputs, dim=1)
-            label_pred = torch.cat([label_pred, pred_class.float()])
+            pred_class = (pred_prob_positive > classification_threshold).float()
+
+            label_pred = torch.cat([label_pred, pred_class])
             pred_prob = torch.cat([pred_prob, pred_prob_positive])
 
     return label_pred.cpu().numpy(), pred_prob.cpu().numpy()
-
 
 def load_text_file(fasta_file):
     with open(fasta_file) as f:
@@ -77,7 +74,7 @@ def load_text_file(fasta_file):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
-        description="Sequence-Based Prediction of B-cell epitope in Parasite Using Transformer-based Deep Learning")
+        description="Sequence-Based Prediction of B-cell Epitope in Human and Veterinary Parasites Using Transformer-based Deep Learning")
     parser.add_argument("-i", required=True, help="input fasta file")
     parser.add_argument("-o", default="DeepResults.csv", help="output a CSV results file")
 
@@ -96,7 +93,7 @@ if __name__ == '__main__':
     model = EncoderDecoderModel(config).to(device)
 
     try:
-        state_dict = torch.load("./DeepModels/deepBCP_model.pkl", map_location=device, weights_only=True)
+        state_dict = torch.load("./DeepModels/deepBCE_model.pkl", map_location=device, weights_only=True)
         model.load_state_dict(state_dict, strict=False)
     except RuntimeError as e:
         print(f"Error loading state_dict: {e}")
