@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # _*_coding:utf-8_*_
-# @Author : Rui-Si Hu
+# @Author: Rui-Si Hu
+# Date: 2025.2.22
 
 import pandas as pd
 import joblib
@@ -48,7 +49,7 @@ def predict(feature, feature_name, classifier_name, sequence_names, output_file)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(usage="it's usage tip.",
-                                     description="Sequence-based prediction of B-cell epitope in parasite with feature representation learning")
+                                     description="Sequence-based Prediction of B-cell Epitope in Human and Veterinary Parasites with Feature Representation Learning")
     parser.add_argument("-i", required=True, default=None, help="input fasta file")
     parser.add_argument("-f", required=True,
                         choices=["AAC", "ASDC", "CKSAAGP", "CKSAAP", "DDE", "DPC", "GAAC", "GDPC", "GTPC", "PAAC",
