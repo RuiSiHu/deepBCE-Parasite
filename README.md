@@ -17,12 +17,12 @@ Activate the newly created environment with the following command:
 
 Within this Python environment, please ensure the following packages and their corresponding versions are installed using pip:
 
-pip install torch==2.4.1
-pip install numpy==1.24.4
-pip install pandas==2.0.3
-pip install openpyxl==3.1.5
-pip install scikit-learn==1.0
-pip install lightgbm==4.5.0
+    pip install torch==2.4.1
+    pip install numpy==1.24.4
+    pip install pandas==2.0.3
+    pip install openpyxl==3.1.5
+    pip install scikit-learn==1.0
+    pip install lightgbm==4.5.0
 
 
 # 3 Running
